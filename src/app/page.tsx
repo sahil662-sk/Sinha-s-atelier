@@ -1,6 +1,8 @@
-'use client';
+﻿'use client';
 
-import { useState, useEffect } from 'react';
+export const dynamic = 'force-dynamic';
+
+import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { 
@@ -34,7 +36,7 @@ interface Category {
   name: string;
 }
 
-export default function HomePage() {
+function HomePageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const urlSearch = searchParams.get('search') || '';
@@ -534,5 +536,19 @@ export default function HomePage() {
         </section>
       </main>
     </div>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
+          <div className="w-8 h-8 border-4 border-slate-900/20 border-t-slate-900 rounded-full animate-spin" />
+        </div>
+      }
+    >
+      <HomePageContent />
+    </Suspense>
   );
 }
