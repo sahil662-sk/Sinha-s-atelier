@@ -1,6 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+export const dynamic = 'force-dynamic';
+
+import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { 
@@ -37,7 +39,7 @@ interface OrderRecord {
   items: OrderItem[];
 }
 
-export default function TrackOrdersPage() {
+function TrackOrdersContent() {
   const searchParams = useSearchParams();
   const queryOrderId = searchParams.get('id');
 
@@ -318,7 +320,7 @@ export default function TrackOrdersPage() {
                       ? 'Package Delivered' 
                       : sharedOrder.status === 'CANCELLED'
                       ? 'Acquisition Cancelled'
-                      : 'In Transit &bull; Under Courier Custody'}
+                      : 'In Transit • Under Courier Custody'}
                   </p>
                   <p className="text-[10px] text-neutral-500">Destination: {sharedOrder.fullAddress}</p>
                 </div>
@@ -429,5 +431,19 @@ export default function TrackOrdersPage() {
 
       </div>
     </div>
+  );
+}
+
+export default function TrackOrdersPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
+          <div className="w-8 h-8 border-4 border-amber-600/20 border-t-amber-600 rounded-full animate-spin" />
+        </div>
+      }
+    >
+      <TrackOrdersContent />
+    </Suspense>
   );
 }
